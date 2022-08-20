@@ -1,0 +1,21 @@
+{
+  "name": "Selector Finder",
+  "version": "1.0",
+  "description": "Find unique CSS selectors",
+  "permissions": ["activeTab"],
+  "action": {
+    "default_title": "Selector Finder",
+    "default_icon": "static/clownfish.png",
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "css": ["index.css"],
+      "js": ["index.js"],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ],
+  "manifest_version": 3
+}

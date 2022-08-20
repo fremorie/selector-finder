@@ -1,0 +1,28 @@
+.selectorCandidate {
+    border: 1px solid #00ff99;
+    background-color: rgba(0, 156, 100, 0.4);
+}
+
+.modalDialog {
+    border: 1px solid blue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 20px;
+    position: absolute;
+    width: 350px;
+    min-height: 200px;
+    top: 20%;
+    left: 10%;
+}
+
+.title {}
+
+.selector {}
+
+.selectorCode {
+    font-family: 'Courier New', sans-serif;
+    overflow-x: scroll;
+}
