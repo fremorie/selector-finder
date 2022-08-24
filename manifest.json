@@ -11,8 +11,7 @@
   "content_scripts": [
     {
       "matches": ["https://*/*"],
-      "css": ["index.css"],
-      "js": ["index.js"],
+      "js": ["background.bundle.js"],
       "run_at": "document_end",
       "all_frames": true
     }

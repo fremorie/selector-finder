@@ -4,12 +4,17 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     output: {
-        path: path.join(__dirname, "/dist"), // the bundle output path
-        filename: "bundle.js", // the name of the bundle
+        path: path.join(__dirname, "/dist"),
+        filename: "[name].bundle.js",
+    },
+    entry: {
+        index: "./src/index.js",
+        background: "./src/utils/findSelector.js",
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: "src/index.html", // to import index.html file inside index.js
+            template: "src/index.html",
+            inject: false,
         }),
         new CopyPlugin({
             patterns: [

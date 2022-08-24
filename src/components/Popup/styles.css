@@ -12,10 +12,11 @@
     background-color: white;
     border-radius: 20px;
     position: absolute;
-    width: 350px;
+    width: 500px;
     min-height: 200px;
     top: 20%;
     left: 10%;
+    z-index: 10000;
 }
 
 .title {}

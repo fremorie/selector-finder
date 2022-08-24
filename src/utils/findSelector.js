@@ -1,3 +1,8 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+import Popup from '../components/Popup'
+
 const isSelectorUnique = (selector) => document.querySelectorAll(selector).length === 1
 
 const getElementAttributes = (element) => ({
@@ -25,69 +30,27 @@ const getElementSelector = (element) => {
     return _selector
 }
 
-const removeChildren = (parent) => {
-    while (parent.lastChild) {
-        parent.removeChild(parent.lastChild)
-    }
-}
-
 const displaySelectorPopup = ({selector, unique}) => {
-    let modal = document.querySelector('.modalDialog')
-    if (modal) {
-        removeChildren(modal)
-    } else {
-        modal = document.createElement('div')
-        modal.classList.add('modalDialog')
-    }
-
-    const br = document.createElement('br')
-
-    const title = document.createElement('div')
-    const titleNode = document.createTextNode(
-        unique
-            ? 'Unique selector:'
-            : 'Coudln\'t find a unique selector :(\n Best I could do:'
-    )
-    title.classList.add('title')
-    title.appendChild(titleNode)
-    title.appendChild(br)
-
-    const selectorDiv = document.createElement('div')
-    const selectorPre = document.createElement('div')
-    selectorPre.classList.add('selectorCode')
-    const selectorNode = document.createTextNode(selector)
-    selectorDiv.classList.add('selector')
-    selectorPre.appendChild(selectorNode)
-    selectorDiv.appendChild(selectorPre)
-
-    modal.appendChild(title)
-    modal.appendChild(selectorDiv)
-
+    let modal = document.querySelector('.selector-finder')
     const body = document.querySelector('body')
-    body.appendChild(modal)
-}
 
-const clearModal = () => {
-    const modalNode = document.querySelector('.modalDialog')
-    if (modalNode) {
-        removeChildren(modalNode)
-        const searchPlaceholder = document.createTextNode('Looking for selector...')
-        modalNode.appendChild(searchPlaceholder)
+    if (!modal) {
+        modal = document.createElement('div')
+        modal.classList.add('selector-finder')
+        body.appendChild(modal)
     }
+
+    ReactDOM.render(<Popup selector={selector} isUnique={unique} />, modal)
 }
 
 function handleClick(e) {
     if (!e.altKey) return
-
-    clearModal()
 
     e.preventDefault()
     e.stopPropagation()
     e.stopImmediatePropagation()
 
     let result = {}
-
-    console.log('Looking for a selector...')
 
     let _selector = getElementSelector(e.target)
     let parent = e.target.parentNode
@@ -98,7 +61,6 @@ function handleClick(e) {
         parent = parent.parentNode
 
         if (!parent.parentNode) {
-            console.log('Could not find a unique selector :(\nBest I could do:')
             result = {
                 unique: false,
                 selector: _selector,
@@ -110,7 +72,6 @@ function handleClick(e) {
         }
     }
 
-    console.log(`\'${_selector}\'`)
     result = {
         unique: true,
         selector: _selector,
@@ -120,8 +81,6 @@ function handleClick(e) {
 
     return
 }
-
-document.onclick = handleClick
 
 function handleMouseOver(e) {
     const element = e.target
@@ -133,5 +92,10 @@ function handleMouseOut(e) {
     e.target.classList.remove('selectorCandidate')
 }
 
-document.onmouseover = handleMouseOver
-document.onmouseout = handleMouseOut
+export const init = () => {
+    document.onclick = handleClick
+    document.onmouseover = handleMouseOver
+    document.onmouseout = handleMouseOut
+}
+
+init()
