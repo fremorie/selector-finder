@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+
+  "name": "DASHA EXTENSION",
+  "version": "0.1",
+
+  "description": "Frontend Developer Tools BY DASHA",
+  "author": "Daria Borisiak",
+
+  "devtools_page": "html/devtools.html"
+}
