@@ -1,5 +1,3 @@
-let SELECTED_ELEMENT
-
 const someFunc = function (element) {
     const isSelectorUnique = (selector) => document.querySelectorAll(selector).length === 1
 
@@ -10,52 +8,108 @@ const someFunc = function (element) {
         tag: element.tagName.toLowerCase(),
     })
 
+    /**
+     * attribute: data-testid | data-locator | tag
+     * */
+    function getIndex(node, prop) {
+        let i=1;
+
+        const getElementProperty = (element) => {
+            return prop.includes('data')
+                ? element.getAttribute(prop)
+                : element.tagName.toLowerCase()
+        }
+
+        let property = getElementProperty(node)
+
+        while(node.previousSibling) {
+            node = node.previousSibling;
+            if(node.nodeType === 1 && (property == getElementProperty(node))) {
+                i++;
+            }
+        }
+
+        return i;
+    }
+
     const getElementSelector = (element) => {
         const { id, dataTestId, dataLocator, tag } = getElementAttributes(element)
 
-        let _selector
-
         if (id) {
-            _selector = `#${id}`.replace('.', '\\.')
+            return {
+                selector: `#${id}`.replace('.', '\\.'),
+                prop: 'id',
+            }
         } else if (dataTestId) {
-            _selector = `[data-testid="${dataTestId}"]`
+            return {
+                selector: `[data-testid="${dataTestId}"]`,
+                prop: 'data-testid',
+            }
         } else if (dataLocator) {
-            _selector = `[data-locator="${dataLocator}"]`
+            return {
+                selector: `[data-locator="${dataLocator}"]`,
+                prop: 'data-locator',
+            }
         } else {
-            _selector = tag.toLowerCase()
+            return {
+                selector: tag.toLowerCase(),
+                prop: 'tag',
+            }
         }
-
-        return _selector
     }
 
     let result = {}
 
-    let _selector = getElementSelector(element)
-    let parent = element.parentNode
+    let {selector: _selector, prop} = getElementSelector(element)
 
-    while (!isSelectorUnique(_selector) && parent) {
-        const parentSelector = getElementSelector(parent)
-        _selector = parentSelector + ' ' + _selector
-        parent = parent.parentNode
-
-        if (!parent.parentNode) {
-            result = {
-                unique: false,
-                selector: _selector,
-            }
-
-            return result
+    if (isSelectorUnique(_selector)) {
+        return {
+            unique: true,
+            selector: _selector,
         }
     }
 
-    result = {
-        unique: true,
-        selector: _selector,
+    let parent = element.parentNode
+
+    while(parent) {
+        const { selector: parentSelector, prop: parentProp} = getElementSelector(parent)
+        let selectorCandidate = parentSelector + ' ' + _selector
+
+        if (isSelectorUnique(selectorCandidate)) {
+            return {
+                unique: true,
+                selector: selectorCandidate
+            }
+        }
+
+        const index = getIndex(parent, prop)
+
+        selectorCandidate = `${parentSelector}:nth-of-type(${index}) ${_selector}`
+
+        if (isSelectorUnique(selectorCandidate)) {
+            return {
+                unique: true,
+                selector: selectorCandidate
+            }
+        }
+
+        _selector = selectorCandidate
+        parent = parent.parentNode
+
+        if (!parent.parentNode) {
+            return {
+                unique: false,
+                selector: _selector,
+            }
+        }
     }
 
     console.log({result})
 
-    return result
+    return {
+        unique: true,
+        selector: _selector,
+    }
 };
 
 function handleSelectedElement() {
@@ -64,12 +118,16 @@ function handleSelectedElement() {
         if (err) {
             console.warn('Error', err);
         } else {
-            SELECTED_ELEMENT = res;
+
+            const { selector, unique } = res
 
             const div = document.getElementById('selector')
 
             if (div) {
-                div.innerText = SELECTED_ELEMENT && SELECTED_ELEMENT.selector
+                div.innerText = selector
+                const isUniqueDiv = document.createElement('div')
+                isUniqueDiv.innerText = `Is unique: ${unique}`
+                div.appendChild(isUniqueDiv)
             }
         }
     });
