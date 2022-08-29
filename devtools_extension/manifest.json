@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
 
-  "name": "DASHA EXTENSION",
+  "name": "Selector Wizard",
   "version": "0.1",
 
-  "description": "Frontend Developer Tools BY DASHA",
+  "description": "Frontend Developer Tools by Dasha",
   "author": "Daria Borisiak",
 
   "devtools_page": "html/devtools.html"
